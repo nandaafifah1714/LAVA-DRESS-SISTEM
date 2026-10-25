@@ -1,0 +1,1537 @@
+<!doctype html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="#f7f7f7">
+    <title>LAV? Dress Rental &amp; Accounting System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="page-root"></div>
+
+  <template data-page="pembayaran-usaha" data-title="Pembayaran Usaha — LAVÉ">
+<div class="app">
+        <aside class="sidebar">
+            <div class="brand">
+                <h1>LAVÉ</h1>
+                <span>DRESS RENTAL & ACCOUNTING</span>
+            </div>
+
+            <nav class="nav">
+                <div class="nav-title">Overview</div>
+                <a href="?page=dashboard" data-page="dashboard">⌂ Dashboard</a>
+
+                <div class="nav-title">Master Data</div>
+                <a href="?page=dress" data-page="dress">◇ Dress</a>
+                <a href="?page=supplier" data-page="supplier">◈ Supplier</a>
+
+                <div class="nav-title">Penyewaan</div>
+                <a href="?page=penyewaan" data-page="penyewaan">◇ Penyewaan</a>
+                <a href="?page=pembayaran" data-page="pembayaran">↳ Pembayaran</a>
+                <a href="?page=pengembalian" data-page="pengembalian">↩ Pengembalian</a>
+
+                <div class="nav-title">Persediaan & Keuangan</div>
+                <a href="?page=pembelian" data-page="pembelian">＋ Pembelian</a>
+                <a href="?page=persediaan" data-page="persediaan">▥ Persediaan</a>
+                <a href="?page=pembayaran-usaha" data-page="pembayaran-usaha">◌ Pembayaran Usaha</a>
+
+                <div class="nav-title">Laporan</div>
+                <a href="?page=laporan" data-page="laporan">▧ Laporan Keuangan</a>
+            </nav>
+        </aside>
+
+        <main class="main">
+            <header class="topbar">
+                <div>
+                    <strong>LAVÉ Management System</strong>
+                    <div class="muted" style="font-size:11px">Integrated Rental · Inventory · Accounting</div>
+                </div>
+                <div class="muted">Administrator</div>
+            </header>
+
+            <div id="toast" class="toast"></div>
+
+            <section class="page">
+                <div class="page-title">
+                    <div>
+                        <h2>Pembayaran Usaha</h2>
+                        <p>Data terintegrasi dari database Supabase.</p>
+                    </div>
+                    <button class="btn btn-light" onclick="window.print()">Cetak</button>
+                </div>
+
+                <div class="card table-card">
+                    <div class="table-head">
+                        <strong>Daftar Pembayaran Usaha</strong>
+                    </div>
+
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Kode</th>
+                                    <th>Kategori</th>
+                                    <th>Tanggal</th>
+                                    <th>Jumlah</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+
+
+
+
+  </template>
+
+  <template data-page="dashboard" data-title="Dashboard — LAVÉ">
+<div class='app'>
+        <aside class="sidebar">
+            <div class="brand">
+                <h1>LAVÉ</h1>
+                <span>DRESS RENTAL & ACCOUNTING</span>
+            </div>
+
+            <nav class="nav">
+                <div class="nav-title">Overview</div>
+                <a href="?page=dashboard" data-page="dashboard">⌂ Dashboard</a>
+
+                <div class="nav-title">Master Data</div>
+                <a href="?page=dress" data-page="dress">◇ Dress</a>
+                <a href="?page=supplier" data-page="supplier">◈ Supplier</a>
+
+                <div class="nav-title">Penyewaan</div>
+                <a href="?page=penyewaan" data-page="penyewaan">◇ Penyewaan</a>
+                <a href="?page=pembayaran" data-page="pembayaran">↳ Pembayaran</a>
+                <a href="?page=pengembalian" data-page="pengembalian">↩ Pengembalian</a>
+
+                <div class="nav-title">Persediaan & Keuangan</div>
+                <a href="?page=pembelian" data-page="pembelian">＋ Pembelian</a>
+                <a href="?page=persediaan" data-page="persediaan">▥ Persediaan</a>
+                <a href="?page=pembayaran-usaha" data-page="pembayaran-usaha">◌ Pembayaran Usaha</a>
+
+                <div class="nav-title">Laporan</div>
+                <a href="?page=laporan" data-page="laporan">▧ Laporan Keuangan</a>
+            </nav>
+        </aside>
+
+        <main class='main'>
+            <header class="topbar">
+                <div>
+                    <strong>LAVÉ Management System</strong>
+                    <div class="muted" style="font-size:11px">Integrated Rental · Inventory · Accounting</div>
+                </div>
+                <div class="muted">Administrator</div>
+            </header>
+
+            <div id="toast" class="toast"></div>
+
+            <section class='page'>
+                <div class="dashboard-welcome">
+                    <div>
+                        <div class="dashboard-welcome-brand">LAVÉ DRESS</div>
+                        <h2 id="dashboardGreeting">Selamat datang!</h2>
+                        <p>Anggun di setiap momen.</p>
+                    </div>
+                    <div class="dashboard-welcome-date" id="dashboardDate"></div>
+                </div>
+                <div class='page-title'>
+                    <div>
+                        <h2>Dashboard</h2>
+                        <p>Ringkasan operasional dan keuangan LAVÉ.</p>
+                    </div>
+                    <button class='btn btn-primary' onclick="location.href='?page=penyewaan'">＋ Transaksi Baru</button>
+                </div>
+
+                <div class='grid grid-4'>
+                    <div class='card stat'>
+                        <div>
+                            <div class='label'>Pendapatan Sewa</div>
+                            <div class='value' id='rev'>Rp0</div>
+                        </div>
+                        <div class='iconbox'>Rp</div>
+                    </div>
+
+                    <div class='card stat'>
+                        <div>
+                            <div class='label'>Beban Operasional</div>
+                            <div class='value' id='exp'>Rp0</div>
+                        </div>
+                        <div class='iconbox'>−</div>
+                    </div>
+
+                    <div class='card stat'>
+                        <div>
+                            <div class='label'>Dress Available</div>
+                            <div class='value' id='avail'>0</div>
+                        </div>
+                        <div class='iconbox'>◇</div>
+                    </div>
+
+                    <div class='card stat'>
+                        <div>
+                            <div class='label'>Piutang</div>
+                            <div class='value' id='ar'>Rp0</div>
+                        </div>
+                        <div class='iconbox'>◌</div>
+                    </div>
+                </div>
+
+                <div class='grid grid-2' style='margin-top:18px'>
+                    <div class='card'>
+                        <h3>Status Dress</h3>
+                        <div id='status'></div>
+                    </div>
+
+                    <div class='card'>
+                        <h3>Akses Cepat</h3>
+                        <div class='grid grid-2'>
+                            <button class='btn btn-light' onclick="location.href='?page=dress'">Dress</button>
+                            <button class='btn btn-light' onclick="location.href='?page=penyewaan'">Penyewaan</button>
+                            <button class='btn btn-light' onclick="location.href='?page=laporan'">Laporan</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+
+
+
+
+  </template>
+
+  <template data-page="dress" data-title="Master Dress - LAVE">
+<div class="app">
+        <aside class="sidebar">
+            <div class="brand">
+                <h1>LAVE</h1>
+                <span>DRESS RENTAL & ACCOUNTING</span>
+            </div>
+
+            <nav class="nav">
+                <div class="nav-title">Overview</div>
+                <a href="?page=dashboard" data-page="dashboard">Dashboard</a>
+
+                <div class="nav-title">Master Data</div>
+                <a href="?page=dress" data-page="dress">Dress</a>
+                <a href="?page=supplier" data-page="supplier">Supplier</a>
+
+                <div class="nav-title">Penyewaan</div>
+                <a href="?page=penyewaan" data-page="penyewaan">Penyewaan</a>
+                <a href="?page=pengembalian" data-page="pengembalian">Pengembalian</a>
+
+                <div class="nav-title">Persediaan & Keuangan</div>
+                <a href="?page=pembelian" data-page="pembelian">Pembelian</a>
+                <a href="?page=persediaan" data-page="persediaan">Ketersediaan Dress</a>
+                <a href="?page=pembayaran-usaha" data-page="pembayaran-usaha">Pembayaran Usaha</a>
+
+                <div class="nav-title">Laporan</div>
+                <a href="?page=laporan" data-page="laporan">Laporan Keuangan</a>
+            </nav>
+        </aside>
+
+        <main class="main">
+            <header class="topbar">
+                <div>
+                    <strong>LAVE Management System</strong>
+                    <div class="muted" style="font-size:11px">Integrated Rental - Inventory - Accounting</div>
+                </div>
+                <div class="muted" id="currentUser">Memuat sesi...</div>
+            </header>
+
+            <div id="toast" class="toast"></div>
+
+            <section class="page">
+                <div class="page-title">
+                    <div>
+                        <h2>Dress & Persediaan</h2>
+                        <p>Kelola model dress, stok per ukuran/warna, kondisi unit, dan riwayat pergerakannya.</p>
+                    </div>
+                    <div class="form-actions">
+                        <button class="btn btn-light" id="manageDressCategoriesButton" type="button">Kelola Kategori</button>
+                        <button class="btn btn-primary" id="addDressButton" type="button">+ Tambah Dress</button>
+                    </div>
+                </div>
+
+                <div class="card table-card">
+                    <div class="table-head">
+                        <strong>Daftar Dress</strong>
+                        <input class="search" id="dressSearch" placeholder="Cari kode atau nama dress...">
+                    </div>
+
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Kode</th>
+                                    <th>Dress</th>
+                                    <th>Kategori</th>
+                                    <th>Ukuran</th>
+                                    <th>Warna</th>
+                                    <th>Harga Beli</th>
+                                    <th>Harga Sewa</th>
+                                    <th>Status</th>
+                                    <th>Kondisi</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dressRows"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div class="modal" id="dressModal">
+        <div class="modal-box">
+            <div class="modal-head">
+                <h3 id="dressModalTitle">Tambah Dress</h3>
+                <button class="close" type="button" data-close="dressModal">x</button>
+            </div>
+
+            <form id="dressForm">
+                <input type="hidden" id="dressId">
+
+                <div class="form-grid">
+                    <div class="field">
+                        <label>Kode Dress</label>
+                        <input id="dressCode" readonly placeholder="Otomatis saat disimpan">
+                    </div>
+                    <div class="field">
+                        <label>Nama Dress</label>
+                        <input id="dressName" required maxlength="100">
+                    </div>
+                    <div class="field">
+                        <label>Kategori Dress</label>
+                        <select id="dressCategory" required></select>
+                    </div>
+                    <div class="field">
+                        <label>Ukuran</label>
+                        <input id="dressSize" required>
+                    </div>
+                    <div class="field">
+                        <label>Warna</label>
+                        <input id="dressColor">
+                    </div>
+                    <div class="field">
+                        <label>Harga Beli</label>
+                        <input id="dressPurchasePrice" type="number" min="0" value="0" required>
+                    </div>
+                    <div class="field">
+                        <label>Harga Sewa</label>
+                        <input id="dressRentalPrice" type="number" min="0" value="0" required>
+                    </div>
+                    <div class="field">
+                        <label>Kondisi</label>
+                        <select id="dressCondition">
+                            <option>Good</option>
+                            <option>Dirty</option>
+                            <option>Minor Damage</option>
+                            <option>Major Damage</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label>Status</label>
+                        <select id="dressStatus">
+                            <option>Available</option>
+                            <option>Rented</option>
+                            <option>Laundry</option>
+                            <option>Repair</option>
+                            <option>Not Available</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label>Foto URL</label>
+                        <input id="dressPhoto" type="url">
+                    </div>
+                    <div class="field">
+                        <label>Keterangan</label>
+                        <textarea id="dressDescription" rows="3"></textarea>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-light" data-close="dressModal">Batal</button>
+                    <button type="submit" class="btn btn-primary">Simpan Dress</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+
+
+
+
+  </template>
+
+  <template data-page="kas-keluar" data-title="Kas Keluar — LAVÉ">
+<div class="app">
+        <aside class="sidebar">
+            <div class="brand">
+                <h1>LAVÉ</h1>
+                <span>DRESS RENTAL & ACCOUNTING</span>
+            </div>
+
+            <nav class="nav">
+                <div class="nav-title">Overview</div>
+                <a href="?page=dashboard" data-page="dashboard">⌂ Dashboard</a>
+
+                <div class="nav-title">Master Data</div>
+                <a href="?page=dress" data-page="dress">◇ Dress</a>
+                <a href="?page=supplier" data-page="supplier">◈ Supplier</a>
+
+                <div class="nav-title">Penyewaan</div>
+                <a href="?page=penyewaan" data-page="penyewaan">◇ Penyewaan</a>
+                <a href="?page=pembayaran" data-page="pembayaran">↳ Pembayaran</a>
+                <a href="?page=pengembalian" data-page="pengembalian">↩ Pengembalian</a>
+
+                <div class="nav-title">Persediaan & Keuangan</div>
+                <a href="?page=pembelian" data-page="pembelian">＋ Pembelian</a>
+                <a href="?page=persediaan" data-page="persediaan">▥ Persediaan</a>
+                <a href="?page=kas-masuk" data-page="kas-masuk">↓ Kas Masuk</a>
+                <a href="?page=kas-keluar" data-page="kas-keluar">↑ Kas Keluar</a>
+                <a href="?page=pembayaran-usaha" data-page="pembayaran-usaha">◌ Pembayaran Usaha</a>
+
+                <div class="nav-title">Laporan</div>
+                <a href="?page=laporan" data-page="laporan">▧ Laporan Keuangan</a>
+            </nav>
+        </aside>
+
+        <main class="main">
+            <header class="topbar">
+                <div>
+                    <strong>LAVÉ Management System</strong>
+                    <div class="muted" style="font-size:11px">Integrated Rental · Inventory · Accounting</div>
+                </div>
+                <div class="muted">Administrator</div>
+            </header>
+
+            <div id="toast" class="toast"></div>
+
+            <section class="page">
+                <div class="page-title">
+                    <div>
+                        <h2>Kas Keluar</h2>
+                        <p>Data terintegrasi dari database Supabase.</p>
+                    </div>
+                    <button class="btn btn-light" onclick="window.print()">Cetak</button>
+                </div>
+
+                <div class="card table-card">
+                    <div class="table-head">
+                        <strong>Daftar Kas Keluar</strong>
+                    </div>
+
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Kode</th>
+                                    <th>Tanggal</th>
+                                    <th>Jumlah</th>
+                                    <th>Metode</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+
+
+
+
+  </template>
+
+  <template data-page="kas-masuk" data-title="Kas Masuk — LAVÉ">
+<div class="app">
+        <aside class="sidebar">
+            <div class="brand">
+                <h1>LAVÉ</h1>
+                <span>DRESS RENTAL & ACCOUNTING</span>
+            </div>
+
+            <nav class="nav">
+                <div class="nav-title">Overview</div>
+                <a href="?page=dashboard" data-page="dashboard">⌂ Dashboard</a>
+
+                <div class="nav-title">Master Data</div>
+                <a href="?page=dress" data-page="dress">◇ Dress</a>
+                <a href="?page=supplier" data-page="supplier">◈ Supplier</a>
+
+                <div class="nav-title">Penyewaan</div>
+                <a href="?page=penyewaan" data-page="penyewaan">◇ Penyewaan</a>
+                <a href="?page=pembayaran" data-page="pembayaran">↳ Pembayaran</a>
+                <a href="?page=pengembalian" data-page="pengembalian">↩ Pengembalian</a>
+
+                <div class="nav-title">Persediaan & Keuangan</div>
+                <a href="?page=pembelian" data-page="pembelian">＋ Pembelian</a>
+                <a href="?page=persediaan" data-page="persediaan">▥ Persediaan</a>
+                <a href="?page=kas-masuk" data-page="kas-masuk">↓ Kas Masuk</a>
+                <a href="?page=kas-keluar" data-page="kas-keluar">↑ Kas Keluar</a>
+                <a href="?page=pembayaran-usaha" data-page="pembayaran-usaha">◌ Pembayaran Usaha</a>
+
+                <div class="nav-title">Laporan</div>
+                <a href="?page=laporan" data-page="laporan">▧ Laporan Keuangan</a>
+            </nav>
+        </aside>
+
+        <main class="main">
+            <header class="topbar">
+                <div>
+                    <strong>LAVÉ Management System</strong>
+                    <div class="muted" style="font-size:11px">Integrated Rental · Inventory · Accounting</div>
+                </div>
+                <div class="muted">Administrator</div>
+            </header>
+
+            <div id="toast" class="toast"></div>
+
+            <section class="page">
+                <div class="page-title">
+                    <div>
+                        <h2>Kas Masuk</h2>
+                        <p>Data terintegrasi dari database Supabase.</p>
+                    </div>
+                    <button class="btn btn-light" onclick="window.print()">Cetak</button>
+                </div>
+
+                <div class="card table-card">
+                    <div class="table-head">
+                        <strong>Daftar Kas Masuk</strong>
+                    </div>
+
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Kode</th>
+                                    <th>Tanggal</th>
+                                    <th>Jumlah</th>
+                                    <th>Metode</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+
+
+
+
+  </template>
+
+
+
+
+
+  <template data-page="laporan" data-title="Laporan Keuangan — LAVÉ">
+<div class="app">
+        <aside class="sidebar">
+            <div class="brand">
+                <h1>LAVÉ</h1>
+                <span>DRESS RENTAL & ACCOUNTING</span>
+            </div>
+            <nav class="nav">
+                <div class="nav-title">Overview</div>
+                <a href="?page=dashboard" data-page="dashboard">⌂ Dashboard</a>
+
+                <div class="nav-title">Master Data</div>
+                <a href="?page=dress" data-page="dress">◇ Dress</a>
+                <a href="?page=supplier" data-page="supplier">◈ Supplier</a>
+
+                <div class="nav-title">Penyewaan</div>
+                <a href="?page=penyewaan" data-page="penyewaan">◇ Penyewaan</a>
+                <a href="?page=pembayaran" data-page="pembayaran">↳ Pembayaran</a>
+                <a href="?page=pengembalian" data-page="pengembalian">↩ Pengembalian</a>
+
+                <div class="nav-title">Persediaan & Keuangan</div>
+                <a href="?page=pembelian" data-page="pembelian">＋ Pembelian</a>
+                <a href="?page=persediaan" data-page="persediaan">▥ Persediaan</a>
+                <a href="?page=pembayaran-usaha" data-page="pembayaran-usaha">◌ Pembayaran Usaha</a>
+
+                <div class="nav-title">Laporan</div>
+                <a href="?page=laporan" data-page="laporan">▧ Laporan Keuangan</a>
+            </nav>
+        </aside>
+
+        <main class="main">
+            <header class="topbar">
+                <div>
+                    <strong>LAVÉ Management System</strong>
+                    <div class="muted" style="font-size:11px">Integrated Rental · Inventory · Accounting</div>
+                </div>
+                <div class="muted">Administrator</div>
+            </header>
+            <div id="toast" class="toast"></div>
+
+            <section class="page">
+                <div class="page-title">
+                    <div>
+                        <h2>Laporan Keuangan</h2>
+                        <p>Ringkasan pendapatan, beban, dan laba bersih sederhana.</p>
+                    </div>
+                    <button class="btn btn-light" onclick="window.print()">Cetak / PDF</button>
+                </div>
+
+                <div class="grid grid-3">
+                    <div class="card">
+                        <div class="muted">Pendapatan Sewa</div>
+                        <h2 id="rev">Rp0</h2>
+                    </div>
+                    <div class="card">
+                        <div class="muted">Beban Operasional</div>
+                        <h2 id="exp">Rp0</h2>
+                    </div>
+                    <div class="card">
+                        <div class="muted">Laba Bersih</div>
+                        <h2 id="profit">Rp0</h2>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-top:18px">
+                    <h3>Laba Rugi</h3>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td>Pendapatan Sewa</td>
+                                <td class="text-right" id="rev2">Rp0</td>
+                            </tr>
+                            <tr>
+                                <td>Beban Operasional</td>
+                                <td class="text-right" id="exp2">Rp0</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Laba Bersih</strong></td>
+                                <td class="text-right"><strong id="profit2">Rp0</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+
+
+
+
+  </template>
+
+  <template data-page="modal-pemilik" data-title="Modal Pemilik - LAVE">
+<div class="app">
+        <aside class="sidebar">
+            <div class="brand">
+                <h1>LAVE</h1>
+                <span>DRESS RENTAL & ACCOUNTING</span>
+            </div>
+            <nav class="nav">
+                <div class="nav-title">Overview</div>
+                <a href="?page=dashboard">Dashboard</a>
+
+                <div class="nav-title">Master Data</div>
+                <a href="?page=dress">Dress</a>
+                <a href="?page=supplier">Supplier</a>
+
+                <div class="nav-title">Keuangan</div>
+                <a href="?page=modal-pemilik" data-page="modal-pemilik">Modal Pemilik</a>
+                <a href="?page=pembelian">Pembelian</a>
+                <a href="?page=persediaan">Ketersediaan Dress</a>
+                <a href="?page=pembayaran-usaha">Pembayaran Usaha</a>
+
+                <div class="nav-title">Laporan</div>
+                <a href="?page=laporan">Laporan Keuangan</a>
+            </nav>
+        </aside>
+
+        <main class="main">
+            <header class="topbar">
+                <div>
+                    <strong>LAVE Management System</strong>
+                    <div class="muted" style="font-size:11px">Setoran modal direkap bersama transaksi operasional</div>
+                </div>
+                <div class="muted" id="currentUser">Memuat sesi...</div>
+            </header>
+            <div id="toast" class="toast"></div>
+
+            <section class="page">
+                <div class="page-title">
+                    <div>
+                        <h2>Keuangan / Modal Pemilik</h2>
+                        <p>Setoran modal dicatat terpisah dari pendapatan dan biaya.</p>
+                    </div>
+                </div>
+
+                <div class="card" style="padding:18px;margin-bottom:18px">
+                    <form id="capitalForm">
+                        <div class="form-grid">
+                            <div class="field">
+                                <label>Nomor Transaksi</label>
+                                <input value="MOD-XXXX (otomatis database)" readonly>
+                            </div>
+                            <div class="field">
+                                <label>Tanggal</label>
+                                <input id="capitalDate" type="date" required>
+                            </div>
+                            <div class="field">
+                                <label>Pemilik</label>
+                                <input id="ownerName" required maxlength="150">
+                            </div>
+                            <div class="field">
+                                <label>Jenis Setoran</label>
+                                <select id="capitalType">
+                                    <option>Cash</option>
+                                    <option>Bank Transfer</option>
+                                </select>
+                            </div>
+                            <div class="field">
+                                <label>Jumlah</label>
+                                <input id="capitalAmount" type="number" min="1" required>
+                            </div>
+                            <div class="field">
+                                <label>Keterangan</label>
+                                <textarea id="capitalDescription" rows="3"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn btn-primary">Posting Setoran Modal</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="card table-card">
+                    <div class="table-head">
+                        <strong>Riwayat Setoran Modal</strong>
+                    </div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Nomor</th>
+                                    <th>Tanggal</th>
+                                    <th>Pemilik</th>
+                                    <th>Jenis</th>
+                                    <th>Jumlah</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="capitalRows"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+
+
+
+
+  </template>
+
+  <template data-page="pembayaran" data-title="Pembayaran — LAVÉ">
+<div class="app">
+        <aside class="sidebar">
+            <div class="brand">
+                <h1>LAVÉ</h1>
+                <span>DRESS RENTAL & ACCOUNTING</span>
+            </div>
+            <nav class="nav">
+                <div class="nav-title">Overview</div>
+                <a href="?page=dashboard" data-page="dashboard">⌂ Dashboard</a>
+
+                <div class="nav-title">Master Data</div>
+                <a href="?page=dress" data-page="dress">◇ Dress</a>
+                <a href="?page=supplier" data-page="supplier">◈ Supplier</a>
+
+                <div class="nav-title">Penyewaan</div>
+                <a href="?page=penyewaan" data-page="penyewaan">◇ Penyewaan</a>
+                <a href="?page=pembayaran" data-page="pembayaran">↳ Pembayaran</a>
+                <a href="?page=pengembalian" data-page="pengembalian">↩ Pengembalian</a>
+
+                <div class="nav-title">Persediaan & Keuangan</div>
+                <a href="?page=pembelian" data-page="pembelian">＋ Pembelian</a>
+                <a href="?page=persediaan" data-page="persediaan">▥ Persediaan</a>
+                <a href="?page=pembayaran-usaha" data-page="pembayaran-usaha">◌ Pembayaran Usaha</a>
+
+                <div class="nav-title">Laporan</div>
+                <a href="?page=laporan" data-page="laporan">▧ Laporan Keuangan</a>
+            </nav>
+        </aside>
+
+        <main class="main">
+            <header class="topbar">
+                <div>
+                    <strong>LAVÉ Management System</strong>
+                    <div class="muted" style="font-size:11px">Integrated Rental · Inventory · Accounting</div>
+                </div>
+                <div class="muted">Administrator</div>
+            </header>
+            <div id="toast" class="toast"></div>
+
+            <section class="page">
+                <div class="page-title">
+                    <div>
+                        <h2>Pembayaran</h2>
+                        <p>Data terintegrasi dari database Supabase.</p>
+                    </div>
+                    <button class="btn btn-light" onclick="window.print()">Cetak</button>
+                </div>
+
+                <div class="card table-card">
+                    <div class="table-head">
+                        <strong>Daftar Pembayaran</strong>
+                    </div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Kode</th>
+                                    <th>Rental</th>
+                                    <th>Tanggal</th>
+                                    <th>Jumlah</th>
+                                    <th>Metode</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+
+
+
+
+  </template>
+
+  <template data-page="pembelian" data-title="Pembelian Dress — LAVÉ">
+<div class="app">
+        <aside class="sidebar">
+            <div class="brand">
+                <h1>LAVÉ</h1>
+                <span>DRESS RENTAL & ACCOUNTING</span>
+            </div>
+            <nav class="nav">
+                <div class="nav-title">Overview</div>
+                <a href="?page=dashboard" data-page="dashboard">⌂ Dashboard</a>
+
+                <div class="nav-title">Master Data</div>
+                <a href="?page=dress" data-page="dress">◇ Dress</a>
+                <a href="?page=supplier" data-page="supplier">◈ Supplier</a>
+
+                <div class="nav-title">Penyewaan</div>
+                <a href="?page=penyewaan" data-page="penyewaan">◇ Penyewaan</a>
+                <a href="?page=pembayaran" data-page="pembayaran">↳ Pembayaran</a>
+                <a href="?page=pengembalian" data-page="pengembalian">↩ Pengembalian</a>
+
+                <div class="nav-title">Persediaan & Keuangan</div>
+                <a href="?page=pembelian" data-page="pembelian">＋ Pembelian</a>
+                <a href="?page=persediaan" data-page="persediaan">▥ Persediaan</a>
+                <a href="?page=pembayaran-usaha" data-page="pembayaran-usaha">◌ Pembayaran Usaha</a>
+
+                <div class="nav-title">Laporan</div>
+                <a href="?page=laporan" data-page="laporan">▧ Laporan Keuangan</a>
+            </nav>
+        </aside>
+
+        <main class="main">
+            <header class="topbar">
+                <div>
+                    <strong>LAVÉ Management System</strong>
+                    <div class="muted" style="font-size:11px">Integrated Rental · Inventory · Accounting</div>
+                </div>
+                <div class="muted">Administrator</div>
+            </header>
+            <div id="toast" class="toast"></div>
+
+            <section class="page">
+                <div class="page-title">
+                    <div>
+                        <h2>Pembelian Dress</h2>
+                        <p>Data terintegrasi dari database Supabase.</p>
+                    </div>
+                    <button class="btn btn-light" onclick="window.print()">Cetak</button>
+                </div>
+
+                <div class="card table-card">
+                    <div class="table-head">
+                        <strong>Daftar Pembelian Dress</strong>
+                    </div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Kode</th>
+                                    <th>Supplier</th>
+                                    <th>Tanggal</th>
+                                    <th>Total</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+
+
+
+
+  </template>
+
+  <template data-page="pengembalian" data-title="Pengembalian — LAVÉ">
+<div class="app">
+        <aside class="sidebar">
+            <div class="brand">
+                <h1>LAVÉ</h1>
+                <span>DRESS RENTAL & ACCOUNTING</span>
+            </div>
+            <nav class="nav">
+                <div class="nav-title">Overview</div>
+                <a href="?page=dashboard" data-page="dashboard">⌂ Dashboard</a>
+
+                <div class="nav-title">Master Data</div>
+                <a href="?page=dress" data-page="dress">◇ Dress</a>
+                <a href="?page=supplier" data-page="supplier">◈ Supplier</a>
+
+                <div class="nav-title">Penyewaan</div>
+                <a href="?page=penyewaan" data-page="penyewaan">◇ Penyewaan</a>
+                <a href="?page=pembayaran" data-page="pembayaran">↳ Pembayaran</a>
+                <a href="?page=pengembalian" data-page="pengembalian">↩ Pengembalian</a>
+
+                <div class="nav-title">Persediaan & Keuangan</div>
+                <a href="?page=pembelian" data-page="pembelian">＋ Pembelian</a>
+                <a href="?page=persediaan" data-page="persediaan">▥ Persediaan</a>
+                <a href="?page=pembayaran-usaha" data-page="pembayaran-usaha">◌ Pembayaran Usaha</a>
+
+                <div class="nav-title">Laporan</div>
+                <a href="?page=laporan" data-page="laporan">▧ Laporan Keuangan</a>
+            </nav>
+        </aside>
+
+        <main class="main">
+            <header class="topbar">
+                <div>
+                    <strong>LAVÉ Management System</strong>
+                    <div class="muted" style="font-size:11px">Integrated Rental · Inventory · Accounting</div>
+                </div>
+                <div class="muted">Administrator</div>
+            </header>
+            <div id="toast" class="toast"></div>
+
+            <section class="page">
+                <div class="page-title">
+                    <div>
+                        <h2>Pengembalian</h2>
+                        <p>Data terintegrasi dari database Supabase.</p>
+                    </div>
+                    <button class="btn btn-light" onclick="window.print()">Cetak</button>
+                </div>
+
+                <div class="card table-card">
+                    <div class="table-head">
+                        <strong>Daftar Pengembalian</strong>
+                    </div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Rental</th>
+                                    <th>Tanggal</th>
+                                    <th>Kondisi</th>
+                                    <th>Hari Terlambat</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+
+
+
+
+  </template>
+
+  <template data-page="penyewaan" data-title="Penyewaan — LAVÉ">
+<div class="app">
+        <aside class="sidebar">
+            <div class="brand">
+                <h1>LAVÉ</h1>
+                <span>DRESS RENTAL & ACCOUNTING</span>
+            </div>
+            <nav class="nav">
+                <div class="nav-title">Overview</div>
+                <a href="?page=dashboard" data-page="dashboard">⌂ Dashboard</a>
+
+                <div class="nav-title">Master Data</div>
+                <a href="?page=dress" data-page="dress">◇ Dress</a>
+                <a href="?page=supplier" data-page="supplier">◈ Supplier</a>
+
+                <div class="nav-title">Penyewaan</div>
+                <a href="?page=penyewaan" data-page="penyewaan">◇ Penyewaan</a>
+                <a href="?page=pembayaran" data-page="pembayaran">↳ Pembayaran</a>
+                <a href="?page=pengembalian" data-page="pengembalian">↩ Pengembalian</a>
+
+                <div class="nav-title">Persediaan & Keuangan</div>
+                <a href="?page=pembelian" data-page="pembelian">＋ Pembelian</a>
+                <a href="?page=persediaan" data-page="persediaan">▥ Persediaan</a>
+                <a href="?page=pembayaran-usaha" data-page="pembayaran-usaha">◌ Pembayaran Usaha</a>
+
+                <div class="nav-title">Laporan</div>
+                <a href="?page=laporan" data-page="laporan">▧ Laporan Keuangan</a>
+            </nav>
+        </aside>
+
+        <main class="main">
+            <header class="topbar">
+                <div>
+                    <strong>LAVÉ Management System</strong>
+                    <div class="muted" style="font-size:11px">Integrated Rental · Inventory · Accounting</div>
+                </div>
+                <div class="muted">Administrator</div>
+            </header>
+            <div id="toast" class="toast"></div>
+
+            <section class="page">
+                <div class="page-title">
+                    <div>
+                        <h2>Transaksi Penyewaan</h2>
+                        <p>Catat transaksi rental. Detail dress dapat dicatat setelah header transaksi dibuat.</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="openModal('modal')">＋ Rental Baru</button>
+                </div>
+
+                <div class="card table-card">
+                    <div class="table-head">
+                        <strong>Daftar Rental</strong>
+                        <input class="search" id="search" placeholder="Cari kode rental...">
+                    </div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Kode</th>
+                                    <th>Customer</th>
+                                    <th>Tanggal</th>
+                                    <th>Jatuh Tempo</th>
+                                    <th>Total</th>
+                                    <th>Deposit</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div class="modal" id="modal">
+        <div class="modal-box">
+            <div class="modal-head">
+                <h3>Rental Baru</h3>
+                <button class="close" onclick="closeModal('modal')">×</button>
+            </div>
+            <form id="form">
+                <div class="form-grid">
+                    <div class="field">
+                        <label>Kode Rental</label>
+                        <input id="rental_code" required>
+                    </div>
+                    <div class="field">
+                        <label>Customer ID</label>
+                        <input id="customer_id" type="number" required>
+                    </div>
+                    <div class="field">
+                        <label>Tanggal Rental</label>
+                        <input id="rental_date" type="date" required>
+                    </div>
+                    <div class="field">
+                        <label>Jatuh Tempo</label>
+                        <input id="return_due_date" type="date" required>
+                    </div>
+                    <div class="field">
+                        <label>Total</label>
+                        <input id="total_amount" type="number" required>
+                    </div>
+                    <div class="field">
+                        <label>Deposit</label>
+                        <input id="deposit_amount" type="number">
+                    </div>
+                    <div class="field">
+                        <label>Status</label>
+                        <select id="status">
+                            <option>Booked</option>
+                            <option>Ongoing</option>
+                            <option>Completed</option>
+                            <option>Cancelled</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-light" onclick="closeModal('modal')">Batal</button>
+                    <button class="btn btn-primary">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+
+
+
+  </template>
+
+  <template data-page="persediaan" data-title="Ketersediaan Dress - LAVE">
+<div class="app">
+        <aside class="sidebar">
+            <div class="brand">
+                <h1>LAVE</h1>
+                <span>DRESS RENTAL & ACCOUNTING</span>
+            </div>
+            <nav class="nav">
+                <div class="nav-title">Overview</div>
+                <a href="?page=dashboard" data-page="dashboard">Dashboard</a>
+
+                <div class="nav-title">Master Data</div>
+                <a href="?page=dress" data-page="dress">Dress</a>
+                <a href="?page=supplier" data-page="supplier">Supplier</a>
+
+                <div class="nav-title">Penyewaan</div>
+                <a href="?page=penyewaan" data-page="penyewaan">Penyewaan</a>
+                <a href="?page=pengembalian" data-page="pengembalian">Pengembalian</a>
+
+                <div class="nav-title">Persediaan & Keuangan</div>
+                <a href="?page=pembelian" data-page="pembelian">Pembelian</a>
+                <a href="?page=persediaan" data-page="persediaan">Ketersediaan Dress</a>
+                <a href="?page=pembayaran-usaha" data-page="pembayaran-usaha">Pembayaran Usaha</a>
+
+                <div class="nav-title">Laporan</div>
+                <a href="?page=laporan" data-page="laporan">Laporan Keuangan</a>
+            </nav>
+        </aside>
+
+        <main class="main">
+            <header class="topbar">
+                <div>
+                    <strong>LAVE Management System</strong>
+                    <div class="muted" style="font-size:11px">Inventory read-only dari Master Dress dan transaksi</div>
+                </div>
+                <div class="muted" id="currentUser">Memuat sesi...</div>
+            </header>
+            <div id="toast" class="toast"></div>
+
+            <section class="page">
+                <div class="page-title">
+                    <div>
+                        <h2>Persediaan / Ketersediaan Dress</h2>
+                        <p>Tidak ada input ulang. Status berasal dari rental, return, purchase, dan movement.</p>
+                    </div>
+                    <button class="btn btn-light" id="printInventory">Cetak</button>
+                </div>
+
+                <div class="card table-card">
+                    <div class="table-head">
+                        <strong>Ketersediaan Dress</strong>
+                        <div class="form-actions">
+                            <input class="search" id="inventorySearch" placeholder="Cari kode atau nama dress...">
+                            <select id="inventoryStatus">
+                                <option value="">Semua status</option>
+                                <option>Available</option>
+                                <option>Rented</option>
+                                <option>Laundry</option>
+                                <option>Repair</option>
+                                <option>Not Available</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Kode</th>
+                                    <th>Nama</th>
+                                    <th>Kategori</th>
+                                    <th>Ukuran</th>
+                                    <th>Warna</th>
+                                    <th>Harga Sewa</th>
+                                    <th>Status</th>
+                                    <th>Kondisi</th>
+                                    <th>Supplier</th>
+                                </tr>
+                            </thead>
+                            <tbody id="inventoryRows"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card table-card" style="margin-top:18px">
+                    <div class="table-head">
+                        <strong>Riwayat Pergerakan Dress</strong>
+                    </div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Tanggal</th>
+                                    <th>Kode</th>
+                                    <th>Nama</th>
+                                    <th>Sebelum</th>
+                                    <th>Sesudah</th>
+                                    <th>Jenis</th>
+                                    <th>Referensi</th>
+                                    <th>Keterangan</th>
+                                </tr>
+                            </thead>
+                            <tbody id="movementRows"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+
+
+
+
+
+  </template>
+
+  <template data-page="settings" data-title="Settings - LAVE">
+<div class="app">
+        <aside class="sidebar">
+            <div class="brand">
+                <h1>LAVE</h1>
+                <span>DRESS RENTAL & ACCOUNTING</span>
+            </div>
+            <nav class="nav">
+                <div class="nav-title">Overview</div>
+                <a href="?page=dashboard" data-page="dashboard">Dashboard</a>
+
+                <div class="nav-title">Master Data</div>
+                <a href="?page=dress">Dress</a>
+                <a href="?page=supplier">Supplier</a>
+
+                <div class="nav-title">Penyewaan</div>
+                <a href="?page=penyewaan">Penyewaan</a>
+                <a href="?page=pengembalian">Pengembalian</a>
+
+                <div class="nav-title">Persediaan & Keuangan</div>
+                <a href="?page=pembelian">Pembelian</a>
+                <a href="?page=persediaan">Ketersediaan Dress</a>
+                <a href="?page=pembayaran-usaha">Pembayaran Usaha</a>
+
+                <div class="nav-title">Laporan</div>
+                <a href="?page=laporan">Laporan Keuangan</a>
+            </nav>
+        </aside>
+
+        <main class="main">
+            <header class="topbar">
+                <div>
+                    <strong>LAVE Management System</strong>
+                    <div class="muted" style="font-size:11px">Configuration, access control, and security</div>
+                </div>
+                <div class="muted" id="currentUser">Memuat sesi...</div>
+            </header>
+            <div id="toast" class="toast"></div>
+
+            <section class="page">
+                <div class="page-title">
+                    <div>
+                        <h2>Settings / Pengaturan</h2>
+                        <p>Pusat konfigurasi bisnis, akun, keamanan, dan accounting.</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-2">
+                    <div class="card">
+                        <h3>Profil Bisnis</h3>
+                        <form id="businessForm">
+                            <div class="field">
+                                <label>Nama Bisnis</label>
+                                <input id="business_name" required>
+                            </div>
+                            <div class="field">
+                                <label>Alamat</label>
+                                <textarea id="business_address"></textarea>
+                            </div>
+                            <div class="form-grid">
+                                <div class="field">
+                                    <label>Telepon</label>
+                                    <input id="business_phone">
+                                </div>
+                                <div class="field">
+                                    <label>Email</label>
+                                    <input id="business_email" type="email">
+                                </div>
+                                <div class="field">
+                                    <label>Website</label>
+                                    <input id="business_website" type="url">
+                                </div>
+                                <div class="field">
+                                    <label>NPWP</label>
+                                    <input id="business_tax">
+                                </div>
+                            </div>
+                            <div class="field">
+                                <label>Logo URL</label>
+                                <input id="business_logo" type="url">
+                            </div>
+                            <div class="field">
+                                <label>Deskripsi</label>
+                                <textarea id="business_description"></textarea>
+                            </div>
+                            <button class="btn btn-primary">Simpan Profil Bisnis</button>
+                        </form>
+                    </div>
+
+                    <div class="card">
+                        <h3>Akun & Keamanan</h3>
+                        <div class="field">
+                            <label>Email Login</label>
+                            <input id="account_email" readonly>
+                        </div>
+                        <div class="field">
+                            <label>Role</label>
+                            <input id="account_role" readonly>
+                        </div>
+                        <div class="field">
+                            <label>Status Akun</label>
+                            <input id="account_status" readonly>
+                        </div>
+                        <form id="passwordForm">
+                            <div class="field">
+                                <label>Password Baru</label>
+                                <input id="new_password" type="password" minlength="8" required>
+                            </div>
+                            <button class="btn btn-light">Ganti Password</button>
+                        </form>
+                        <button class="btn btn-danger" id="logoutButton" style="margin-top:12px">Logout</button>
+                    </div>
+
+                    <div class="card">
+                        <h3>Pengaturan Akuntansi</h3>
+                        <form id="accountingForm">
+                            <div class="form-grid">
+                                <div class="field">
+                                    <label>Mata Uang</label>
+                                    <input id="currency" value="IDR">
+                                </div>
+                                <div class="field">
+                                    <label>Metode Pencatatan</label>
+                                    <select id="accounting_method">
+                                        <option>Accrual</option>
+                                        <option>Cash</option>
+                                    </select>
+                                </div>
+                                <div class="field">
+                                    <label>Awal Periode</label>
+                                    <input id="period_start" type="date">
+                                </div>
+                                <div class="field">
+                                    <label>Akhir Periode</label>
+                                    <input id="period_end" type="date">
+                                </div>
+                            </div>
+                            <button class="btn btn-primary">Simpan Accounting</button>
+                        </form>
+                    </div>
+
+                    <div class="card">
+                        <h3>Preferensi Sistem</h3>
+                        <form id="preferenceForm">
+                            <div class="form-grid">
+                                <div class="field">
+                                    <label>Tema</label>
+                                    <select id="theme">
+                                        <option value="light">Light</option>
+                                        <option value="dark">Dark</option>
+                                    </select>
+                                </div>
+                                <div class="field">
+                                    <label>Jumlah Data per Halaman</label>
+                                    <input id="rows_per_page" type="number" min="5" max="200">
+                                </div>
+                                <div class="field">
+                                    <label>Periode Dashboard</label>
+                                    <select id="dashboard_period">
+                                        <option>month</option>
+                                        <option>year</option>
+                                        <option>today</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <label><input id="confirm_delete" type="checkbox"> Konfirmasi sebelum nonaktifkan</label>
+                            <br><br>
+                            <button class="btn btn-primary">Simpan Preferensi</button>
+                        </form>
+                    </div>
+
+                    <div class="card" style="grid-column:1/-1">
+                        <h3>Audit Log</h3>
+                        <div class="table-wrap">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Waktu</th>
+                                        <th>Action</th>
+                                        <th>Module</th>
+                                        <th>Record</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="auditRows"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+
+
+
+
+  </template>
+
+  <template data-page="supplier" data-title="Supplier — LAVÉ">
+<div class="app">
+        <aside class="sidebar">
+            <div class="brand">
+                <h1>LAVÉ</h1>
+                <span>DRESS RENTAL & ACCOUNTING</span>
+            </div>
+            <nav class="nav">
+                <div class="nav-title">Overview</div>
+                <a href="?page=dashboard" data-page="dashboard">⌂ Dashboard</a>
+                <div class="nav-title">Master Data</div>
+                <a href="?page=dress" data-page="dress">◇ Dress</a>
+                <a href="?page=supplier" data-page="supplier">◈ Supplier</a>
+                <div class="nav-title">Penyewaan</div>
+                <a href="?page=penyewaan" data-page="penyewaan">◇ Penyewaan</a>
+                <a href="?page=pembayaran" data-page="pembayaran">↳ Pembayaran</a>
+                <a href="?page=pengembalian" data-page="pengembalian">↩ Pengembalian</a>
+                <div class="nav-title">Persediaan & Keuangan</div>
+                <a href="?page=pembelian" data-page="pembelian">＋ Pembelian</a>
+                <a href="?page=persediaan" data-page="persediaan">▥ Persediaan</a>
+                <a href="?page=pembayaran-usaha" data-page="pembayaran-usaha">◌ Pembayaran Usaha</a>
+                <div class="nav-title">Laporan</div>
+                <a href="?page=laporan" data-page="laporan">▧ Laporan Keuangan</a>
+            </nav>
+        </aside>
+        <main class="main">
+            <header class="topbar">
+                <div>
+                    <strong>LAVÉ Management System</strong>
+                    <div class="muted" style="font-size:11px">Integrated Rental · Inventory · Accounting</div>
+                </div>
+                <div class="muted">Administrator</div>
+            </header>
+            <div id="toast" class="toast"></div>
+            <section class="page">
+                <div class="page-title">
+                    <div>
+                        <h2>Supplier</h2>
+                        <p>Kelola data supplier secara terstruktur.</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="openForm()">＋ Tambah Data</button>
+                </div>
+                <div class="card table-card">
+                    <div class="table-head">
+                        <strong>Daftar Supplier</strong>
+                        <input class="search" id="search" placeholder="Cari data...">
+                    </div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Kode</th>
+                                    <th>Nama</th>
+                                    <th>Telepon</th>
+                                    <th>Email</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    <div class="modal" id="modal">
+        <div class="modal-box">
+            <div class="modal-head">
+                <h3 id="modalTitle">Tambah Data</h3>
+                <button class="close" onclick="closeModal('modal')">×</button>
+            </div>
+            <form id="form">
+                <input type="hidden" id="editId">
+                <div class="form-grid">
+                    <div class="field">
+                        <label>Kode Supplier</label>
+                        <input id="supplier_code" type="text" required>
+                    </div>
+                    <div class="field">
+                        <label>Nama</label>
+                        <input id="name" type="text" required>
+                    </div>
+                    <div class="field">
+                        <label>Telepon</label>
+                        <input id="phone" type="text" >
+                    </div>
+                    <div class="field">
+                        <label>Email</label>
+                        <input id="email" type="email" >
+                    </div>
+                    <div class="field">
+                        <label>Alamat</label>
+                        <input id="address" type="text" >
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-light" onclick="closeModal('modal')">Batal</button>
+                    <button class="btn btn-primary">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+
+
+  </template>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="app.js"></script>
+</body>
+</html>
